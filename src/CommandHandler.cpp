@@ -16,7 +16,6 @@
 CommandHandler::CommandHandler() = default;
 
 auto CommandHandler::parseCommand(std::string const& command) -> std::vector<std::string> {
-	std::cout << command << std::endl;
 	auto tokens = std::vector<std::string>();
 	if (command.empty())
 		return tokens;
@@ -47,13 +46,9 @@ auto CommandHandler::parseCommand(std::string const& command) -> std::vector<std
 }
 
 auto CommandHandler::processCommand(std::string const& command) -> std::string {
-	std::cout << command << std::endl;
 	auto tokens = parseCommand(command);
 	if (tokens.empty()) {
 		return "Error: empty commands\r\n";
-	}
-	for (auto const& token : tokens) {
-		std::cout << token << std::endl;
 	}
 	auto cmd = tokens[0];
 	std::ranges::transform(cmd, cmd.begin(), [](unsigned char c) { return std::toupper(c); });

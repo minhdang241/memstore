@@ -63,7 +63,7 @@ auto Server::start() -> void {
 			std::cerr << "Failed to accept connection" << std::endl;
 			continue;
 		}
-		std::cout << "Client connected" << std::endl;
+		std::cout << "Client " << client_address.sin_port << " connected" << std::endl;
 		threads.emplace_back([client_socket_fd, &cmd_handler]() {
 			char buffer[1024];
 			while (true) {
@@ -77,11 +77,10 @@ auto Server::start() -> void {
 			}
 			close(client_socket_fd);
 		});
-
-		for (auto& t : threads) {
-			if (t.joinable())
-				t.join();
-		}
+	}
+	for (auto& t : threads) {
+		if (t.joinable())
+			t.join();
 	}
 }
 
