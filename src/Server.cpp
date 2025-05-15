@@ -8,7 +8,11 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <ostream>
+#include <thread>
 #include <unistd.h>
+#include <vector>
+
+#include "../include/CommandHandler.h"
 
 Server::Server(int port)
 : port(port)
@@ -46,6 +50,9 @@ auto Server::start() -> void {
 
 	std::cout << "Server listening on port " << port << std::endl;
 
+	auto threads = std::vector<std::thread>();
+	auto cmd_handler = CommandHandler();
+
 	// Accept connections
 	while (true) {
 		sockaddr_in client_address;
@@ -57,16 +64,28 @@ auto Server::start() -> void {
 			continue;
 		}
 		std::cout << "Client connected" << std::endl;
-		// Handle client connection
-		char buffer[1024] = {0};
-		read(client_socket_fd, buffer, sizeof(buffer));
-		std::cout << buffer << std::endl;
-		auto reply = std::string("Hello Client");
-		send(client_socket_fd, reply.c_str(), reply.size(), 0);
+		threads.emplace_back([client_socket_fd, &cmd_handler]() {
+			char buffer[1024];
+			while (true) {
+				memset(buffer, 0, sizeof(buffer));
+				int bytes = recv(client_socket_fd, buffer, sizeof(buffer) - 1, 0);
+				if (bytes == 0)
+					break;
+				auto request = std::string(buffer, bytes);
+				auto response = cmd_handler.processCommand(request);
+				send(client_socket_fd, response.c_str(), response.size(), 0);
+			}
+			close(client_socket_fd);
+		});
+
+		for (auto& t : threads) {
+			if (t.joinable())
+				t.join();
+		}
 	}
 }
 
-auto Server::stop() -> void {
+auto Server::stop() const -> void {
 	if (socket_fd > 0) {
 		close(socket_fd);
 	}

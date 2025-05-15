@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/pocc/pre-commit-hooks # thin wrapper for clang-format
+    rev: v1.3.5
+    hooks:
+      - id: clang-format
+        name: clang-format (C/C++)
+        stages: [ pre-commit ]        # also works for push/ci
+        language: system
+        entry: clang-format -i
+        args: [ "--style=file" ]
+        # File patterns to include
+        files: \.(c|h|cpp|hpp|cc|cxx|hh)$

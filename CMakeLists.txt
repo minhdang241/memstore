@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31)
 project(key_value_store)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # add the testing library catch2
 enable_testing()

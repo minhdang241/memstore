@@ -5,11 +5,12 @@
 #ifndef SERVER_H
 #define SERVER_H
 class Server {
-    int port;
-    int socket_fd;
-public:
-    explicit Server(int port);
-    auto start() -> void;
-    auto stop() -> void;
+	int port;
+	int socket_fd;
+
+ public:
+	explicit Server(int port);
+	auto start() -> void;
+	auto stop() const -> void;
 };
-#endif //SERVER_H
+#endif // SERVER_H

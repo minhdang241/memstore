@@ -3,6 +3,9 @@
 //
 
 #include "../include/CommandHandler.h"
+
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -11,7 +14,9 @@
  */
 
 CommandHandler::CommandHandler() = default;
-auto CommandHandler::processCommand(std::string const& command) -> std::vector<std::string> {
+
+auto CommandHandler::parseCommand(std::string const& command) -> std::vector<std::string> {
+	std::cout << command << std::endl;
 	auto tokens = std::vector<std::string>();
 	if (command.empty())
 		return tokens;
@@ -23,7 +28,7 @@ auto CommandHandler::processCommand(std::string const& command) -> std::vector<s
 		if (numElements == 0)
 			return tokens;
 		auto pos = index + 2;
-		for (int i = 0; i < numElements; i++) {
+		for (auto i = 0; i < numElements; i++) {
 			if (pos >= command.size() or command[pos] != '$')
 				break;
 			index = command.find("\r\n", pos);
@@ -39,4 +44,25 @@ auto CommandHandler::processCommand(std::string const& command) -> std::vector<s
 		}
 	}
 	return tokens;
+}
+
+auto CommandHandler::processCommand(std::string const& command) -> std::string {
+	std::cout << command << std::endl;
+	auto tokens = parseCommand(command);
+	if (tokens.empty()) {
+		return "Error: empty commands\r\n";
+	}
+	for (auto const& token : tokens) {
+		std::cout << token << std::endl;
+	}
+	auto cmd = tokens[0];
+	std::ranges::transform(cmd, cmd.begin(), [](unsigned char c) { return std::toupper(c); });
+	auto response = std::ostringstream();
+	if (cmd == "COMMAND") {
+		response << "*0\r\n";
+	}
+	else if (cmd == "PING") {
+		response << "+PONG\r\n";
+	}
+	return response.str();
 }

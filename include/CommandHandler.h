@@ -7,11 +7,11 @@
 #include <string>
 
 class CommandHandler {
-public:
-    CommandHandler();
-    // Process a command from a client and return RESP-formatted response
-    auto processCommand(std::string const& command) -> std::vector<std::string>;
+ public:
+	CommandHandler();
+	// Process a command from a client and return RESP-formatted response
+	static auto parseCommand(std::string const& command) -> std::vector<std::string>;
+	auto processCommand(std::string const& command) -> std::string;
 };
 
-
-#endif //COMMANDHANDLER_H
+#endif // COMMANDHANDLER_H
