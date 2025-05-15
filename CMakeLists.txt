@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 # add the testing library catch2
 enable_testing()
-add_library(catch2_main lib/catch2_main.cpp)
+add_library(catch2_main lib/catch2_main.cpp
+        include/Database.h)
 target_include_directories(catch2_main PUBLIC lib)
 # link the library so that other programs can get it
 link_libraries(catch2_main)
@@ -14,7 +15,8 @@ link_libraries(catch2_main)
 
 add_library(server src/Server.cpp)
 add_library(command_handler src/CommandHandler.cpp)
-link_libraries(server command_handler)
+add_library(database src/Database.cpp)
+link_libraries(server command_handler database)
 
 add_executable(key_value_store src/main.cpp)
 
